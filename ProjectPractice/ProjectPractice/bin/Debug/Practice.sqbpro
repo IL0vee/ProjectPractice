@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="D:/SQLite/Practice.db" readonly="0" foreign_keys="" case_sensitive_like="" temp_store="" wal_autocheckpoint="" synchronous=""/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1490"/><column_width id="4" width="0"/></tab_structure><tab_browse><current_table name="0,0:"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="Превышают плановую дату завершения 2022 год">SELECT Jobs.Id_job, Jobs.Code_job, Assignments.Service_number, Jobs.Name, Jobs.Planned_date, Assignments.Real_date
+FROM Jobs
+INNER JOIN Assignments ON Jobs.Code_job = Assignments.Code_job
+WHERE strftime('%Y', Assignments.Real_date) = '2022' 
+AND Assignments.Real_date &gt; Jobs.Planned_date;</sql><sql name="Кол-во работ у некоторого сотрудника в 2023 году">SELECT COUNT(*) AS Number_of_works
+FROM Jobs
+INNER JOIN Assignments ON Jobs.Code_job = Assignments.Code_job
+WHERE Assignments.Service_number = '765823'
+AND strftime('%Y', Assignments.Date_issue) = '2023'
+AND (Assignments.Real_date IS NULL OR strftime('%Y', Assignments.Real_date) = '2023');</sql><sql name="Работы которые к дате завершения выполнены не более чем на 50%">SELECT Jobs.*, Assignments.Real_laboriousness, Assignments.Real_date
+FROM Jobs
+INNER JOIN Assignments ON Jobs.Code_job = Assignments.Code_job
+WHERE Assignments.Real_laboriousness &lt;= 0.5 * Jobs.Laboriousness
+AND Assignments.Planned_date &lt;= Assignments.Real_date;</sql><sql name="Должностной состав сотрудников выполняющих работу&quot;Ремонт помещений&quot;">SELECT Staff.Service_number, Staff.Staff_Name, Staff.Post, Jobs.Code_job, Jobs.name, COUNT(Staff.Service_number) AS Количество
+FROM Staff
+INNER JOIN Assignments ON Staff.Service_number = Assignments.Service_number
+INNER JOIN Jobs ON Assignments.Code_job = Jobs.Code_job
+WHERE Jobs.name = 'Ремонт помещений'
+GROUP BY Staff.Post;</sql><sql name="Сброс автоинкремента">UPDATE sqlite_sequence SET seq = 0 WHERE name = 'Users';</sql><current_tab id="1"/></tab_sql></sqlb_project>
