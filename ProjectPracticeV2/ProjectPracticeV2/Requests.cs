@@ -47,7 +47,7 @@ namespace ProjectPracticeV2
                 "FROM Jobs " +
                 "INNER JOIN Assignments ON Jobs.Code_job = Assignments.Code_job " +
                 "WHERE strftime('%Y', Assignments.Real_date) = '2022' " +
-                "AND Assignments.Real_date > Jobs.Planned_date; ";
+                "AND Assignments.Real_date < Jobs.Planned_date; ";
 
             SQLiteCommand cmd = new SQLiteCommand(query, conn);
             conn.Open();
@@ -74,12 +74,13 @@ namespace ProjectPracticeV2
             TableRequests.Visible = true;
             using (SQLiteConnection conn = new SQLiteConnection("Data Source=Practice.db"))
             {
-                string query = "SELECT COUNT(*) AS Number_of_works " +
-                               "FROM Jobs " +
-                               "INNER JOIN Assignments ON Jobs.Code_job = Assignments.Code_job " +
-                               "WHERE Assignments.Service_number = @ServiceNumber " +
-                               "AND strftime('%Y', Assignments.Date_issue) = '2023' " +
-                               "AND (Assignments.Real_date IS NULL OR strftime('%Y', Assignments.Real_date) = '2023');";
+                string query = "SELECT COUNT(*) AS Number_of_works, Jobs.Code_job, Jobs.name, Assignments.Service_number " +
+                    "FROM Jobs " +
+                    "INNER JOIN Assignments ON Jobs.Code_job = Assignments.Code_job " +
+                    "WHERE Assignments.Service_number = @ServiceNumber " +
+                    "AND strftime('%Y', Assignments.Date_issue) = '2023' " +
+                    "AND strftime('%m', Assignments.Date_issue) IN('03', '04', '05') " +
+                    "AND(Assignments.Real_date IS NULL OR strftime('%Y', Assignments.Real_date) = '2023'); ";
 
                 using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
                 {
